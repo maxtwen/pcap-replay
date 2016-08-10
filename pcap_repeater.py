@@ -12,4 +12,15 @@ if __name__ == '__main__':
         dst_port = eth.ip.data.dport
         src_port = eth.ip.data.sport
         data = eth.ip.data.data
-        print eth, dst_ip, src_ip, dst_port, src_port, data
+
+        if type(eth.ip.data) == dpkt.udp.UDP:
+            protocol = socket.SOCK_DGRAM
+        elif type(eth.ip.data) == dpkt.tcp.TCP:
+            protocol = socket.SOCK_STREAM
+        else:
+            raise TypeError
+
+        sock_client = socket.socket(socket.AF_INET, protocol)
+        sock_client.connect((dst_ip, dst_port))
+        sock_client.send(data)
+        sock_client.recv(0)
