@@ -1,8 +1,7 @@
-from contextlib import contextmanager, closing
-
 import dpkt
-import sys
 import socket
+from contextlib import closing, contextmanager
+from optparse import OptionParser
 
 
 @contextmanager
@@ -45,7 +44,20 @@ def pcap_handler(path, ignore_errno_list, timeout=1):
                 sock_client.shutdown(socket.SHUT_WR)
                 sock_client.recv(0)
 
-if __name__ == '__main__':
-    args = sys.argv
-    pcap_handler(args[1], args[2], args[3:])
 
+if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-f", "--file", dest="path",
+                      help="path to pcap file", )
+    parser.add_option("-t", "--timeout", dest="timeout",
+                      help="recv timeout in seconds (default=1)",
+                      default=1)
+    parser.add_option("-i", "--ignore", dest="ignore",
+                      help="""ignore specified socket errors. \n
+                           54 - Connection reset by peer \n
+                           61 - Connection refused \n
+                           110 - Connection timed out \n""",
+                      choices=('54', '61', '110'), type='choice',
+                      default=[], action='append')
+    (options, args) = parser.parse_args()
+    pcap_handler(path=options.path, timeout=options.timeout, ignore_errno_list=map(int, options.ignore))
