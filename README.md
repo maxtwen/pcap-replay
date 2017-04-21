@@ -2,9 +2,9 @@
 
 sudo tcpdump -i lo dst host localhost and port 5000 -A -w  /path/to/mycap.pcap
 
-python pcap_repeater.py -f /path/to/mycap.pcap
+python pcap_replay.py -f /path/to/mycap.pcap
 
-python pcap_repeater.py -f /path/to/mycap.pcap -i 54 -i 61
+python pcap_replay.py -f /path/to/mycap.pcap -i 54 -i 61
 
 **Options:**
 
